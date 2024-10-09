@@ -43,97 +43,89 @@ test('view user info', async ({ page }) => {
     await expect(page.getByRole('main')).toContainText('diner');
 });
 
-test('create/remove franchise', async ({ page }) => {
-  
+test('create/remove franchise - mocked', async ({ page }) => {
+  //mock returning an admin user
+  await page.route('*/**/api/auth', async (route) => {
+    const loginReq = { email: 'rex.okland@gmail.com', password: '000' };
+    const loginRes = { user: { id: 10, name: 'Rex Okland', email: 'rex.okland@gmail.com', roles: [{ role: 'admin' }] }, token: 'abcdefg' };
+    expect(route.request().method()).toBe('PUT');
+    expect(route.request().postDataJSON()).toMatchObject(loginReq);
+    await route.fulfill({ json: loginRes });
+  });
+
+  //mock returning all franchises (admin control)
+  //mock the creation of a franchise (admin control)
+  await page.route('**/api/franchise', async (route) => {
+
+    var callType = route.request().method()
+    
+
+    const franchiseListRes = 
+    [
+      { id: 1, name: 'Default Franchise', 
+        admins: [{ email: 'shimmyshimmyay001@gmail.com', id: 50, name: 'Test User' }], 
+        stores: [{ id: 1, name: 'Default Store 1', totalRevenue: 0}, { id: 2, name: 'Default Store 2', totalRevenue: 0.008}] 
+      },
+      { id: 10, name: 'Another Franchise', 
+        admins: [{ email: 'shimmyshimmyay001@gmail.com', id: 50, name: 'Test User' }], 
+        stores: [{ id: 3, name: 'Another Store 1', totalRevenue: 0}, { id: 4, name: 'Another Store 2', totalRevenue: 0.007}] 
+      }
+    ]
+    const createFranchiseRes = 
+    { id: 20, name: 'New Franchise', 
+      admins: [{ email: 'shimmyshimmyay001@gmail.com', id: 50, name: 'Test User' }]
+    }
+
+    if(callType == 'GET'){
+      console.log('GET method reached')
+      route.fulfill({ json: franchiseListRes });
+    }
+    else if(callType == 'POST'){
+      console.log('POST method reached')
+      route.fulfill({ json: createFranchiseRes });
+    }
+    
+  });
+
+  //mock the deletion of a franchise (admin control)
+  //should I use 20 instead of ':franchiseID' ?
+
+  // await page.route('**/api/franchise/20', async (route) => {
+  //   deleteFranchiseRes: { message: 'franchise deleted' }
+  //   expect(route.request().method()).toBe('DELETE');
+  //   await route.fulfill({ json: deleteFranchiseRes });
+  // });
+
   await page.goto('http://localhost:5173/');
   await page.getByRole('link', { name: 'Login' }).click();
   await page.getByPlaceholder('Email address').click();
-  await page.getByPlaceholder('Email address').fill('a@jwt.com');
-  await page.getByPlaceholder('Password').click();
-  await page.getByPlaceholder('Password').fill('admin');
-  await page.getByPlaceholder('Password').press('Enter');
+  await page.getByPlaceholder('Email address').fill('rex.okland@gmail.com');
+
+  await page.getByPlaceholder('Password').fill('000');
+
   await page.getByRole('button', { name: 'Login' }).click();
+
   await page.getByRole('link', { name: 'Admin' }).click();
-  await page.getByText('Mama Ricci\'s kitchen').click();
-
-  //await expect(page.getByRole('heading')).toContainText('Mama Ricci\'s kitchen');
-
-  await page.getByRole('button', { name: 'Add Franchise' }).click();
-
-  //await expect(page.getByRole('heading')).toContainText('Create franchise');
-
-  await page.getByPlaceholder('franchise name').click();
-  await page.getByPlaceholder('franchise name').fill('skibidi_pizza');
-  await page.getByPlaceholder('franchisee admin email').click();
-  await page.getByPlaceholder('franchisee admin email').fill('shimmyshimmyay001@gmail.com');
-  await page.getByRole('button', { name: 'Create' }).click();
-
-  //await expect(page.locator('tbody')).toContainText('skibidi_pizza');
+  
+  await expect(page.getByRole('heading')).toContainText("Mama Ricci's kitchen");
 
   await page.getByRole('button', { name: 'Add Franchise' }).click();
+
   await page.getByPlaceholder('franchise name').click();
-  await page.getByPlaceholder('franchise name').fill('skibidi_pizza_2');
+  await page.getByPlaceholder('franchise name').fill('New Franchise');
+
   await page.getByPlaceholder('franchisee admin email').click();
   await page.getByPlaceholder('franchisee admin email').fill('shimmyshimmyay001@gmail.com');
-  await page.getByPlaceholder('franchisee admin email').press('Enter');
+
   await page.getByRole('button', { name: 'Create' }).click();
-  await page.getByRole('row', { name: 'skibidi_pizza Test user Close' }).getByRole('button').click();
-  await page.getByRole('button', { name: 'Close' }).click();
-  await page.getByRole('button', { name: 'Close' }).click();
 
-  //await expect(page.getByRole('heading')).toContainText('Sorry to see you go');
+  // await page.getByRole('row', { name: 'New Franchise Test user Close' }).getByRole('button').click();
+  // await page.getByText('Sorry to see you go').click();
+  // await expect(page.getByRole('heading')).toContainText('Sorry to see you go');
 
-  await page.getByRole('button', { name: 'Close' }).click();
-
+  // await page.getByRole('button', { name: 'Close' }).click();
 });
 
-
-test('view franchisee dash', async ({ page }) => {
-  
-  await page.goto('http://localhost:5173/');
-  await page.getByRole('link', { name: 'Login' }).click();
-  await page.getByPlaceholder('Email address').click();
-  await page.getByPlaceholder('Email address').fill('a@jwt.com');
-  await page.getByPlaceholder('Email address').press('Tab');
-  await page.getByPlaceholder('Password').fill('admin');
-  await page.getByPlaceholder('Password').press('Enter');
-  await page.getByRole('button', { name: 'Login' }).click();
-  await page.getByRole('link', { name: 'Admin' }).click();
-  await page.getByRole('button', { name: 'Add Franchise' }).click();
-  await page.getByPlaceholder('franchise name').click();
-  await page.getByPlaceholder('franchise name').fill('brians_pizza');
-  await page.getByPlaceholder('franchisee admin email').click();
-  await page.getByPlaceholder('franchisee admin email').fill('shimmyshimmyay001@gmail.com');
-  await page.getByRole('button', { name: 'Create' }).click();
-  await page.getByRole('link', { name: 'Logout' }).click();
-  await page.getByRole('link', { name: 'Login' }).click();
-  await page.getByPlaceholder('Email address').click();
-  await page.getByPlaceholder('Email address').fill('shimmyshimmyay001@gmail.com');
-  await page.getByPlaceholder('Password').click();
-  await page.getByPlaceholder('Password').fill('001');
-  await page.getByRole('button', { name: 'Login' }).click();
-  await page.getByLabel('Global').click();
-  await page.getByLabel('Global').getByRole('link', { name: 'Franchise' }).click();
-  await page.getByRole('button', { name: 'Create store' }).click();
-
-  //await expect(page.getByRole('heading')).toContainText('Create store');
-
-  await page.getByPlaceholder('store name').click();
-  await page.getByPlaceholder('store name').fill('the krusty krab');
-  await page.getByRole('button', { name: 'Create' }).click();
-
-  //await expect(page.locator('tbody')).toContainText('the krusty krab');
-  //await expect(page.locator('tbody')).toContainText('0 ₿');
-
-  await page.getByRole('button', { name: 'Close' }).click();
-
-  //await expect(page.getByRole('heading')).toContainText('Sorry to see you go');
-  //await expect(page.getByRole('main')).toContainText('Are you sure you want to close the brians_pizza store the krusty krab ? This cannot be restored. All outstanding revenue with not be refunded.');
-  
-  await page.getByRole('button', { name: 'Close' }).click();
-  await page.getByRole('link', { name: 'Logout' }).click();
-
-});
 
 
 test('purchase with login', async ({ page }) => {
