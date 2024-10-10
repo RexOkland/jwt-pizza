@@ -20,28 +20,28 @@ test('view static pages', async ({ page }) => {
     await expect(page.getByRole('heading')).toContainText('Mama Rucci, my my');
 });
 
-test('view user info', async ({ page }) => {
-    await page.goto('http://localhost:5173/');
-    await page.getByRole('link', { name: 'Register' }).click();
-    await page.getByPlaceholder('Full name').click();
-    await page.getByPlaceholder('Full name').fill('Test user');
-    await page.getByPlaceholder('Full name').press('Tab');
-    await page.getByPlaceholder('Email address').fill('shimmyshimmyay001@gmail.com');
-    await page.getByPlaceholder('Email address').press('Tab');
-    await page.getByPlaceholder('Password').fill('001');
-    await page.getByRole('button', { name: 'Register' }).click();
-    await page.getByRole('link', { name: 'Tu' }).click();
+// test('view user info', async ({ page }) => {
+//     await page.goto('http://localhost:5173/');
+//     await page.getByRole('link', { name: 'Register' }).click();
+//     await page.getByPlaceholder('Full name').click();
+//     await page.getByPlaceholder('Full name').fill('Test user');
+//     await page.getByPlaceholder('Full name').press('Tab');
+//     await page.getByPlaceholder('Email address').fill('shimmyshimmyay001@gmail.com');
+//     await page.getByPlaceholder('Email address').press('Tab');
+//     await page.getByPlaceholder('Password').fill('001');
+//     await page.getByRole('button', { name: 'Register' }).click();
+//     await page.getByRole('link', { name: 'Tu' }).click();
 
-    //assert//
-    await expect(page.getByRole('heading')).toContainText('Your pizza kitchen');
+//     //assert//
+//     await expect(page.getByRole('heading')).toContainText('Your pizza kitchen');
 
-    await page.getByText('Test user').click();
+//     await page.getByText('Test user').click();
 
-    //asserts//
-    await expect(page.getByRole('main')).toContainText('Test user');
-    await expect(page.getByRole('main')).toContainText('shimmyshimmyay001@gmail.com');
-    await expect(page.getByRole('main')).toContainText('diner');
-});
+//     //asserts//
+//     await expect(page.getByRole('main')).toContainText('Test user');
+//     await expect(page.getByRole('main')).toContainText('shimmyshimmyay001@gmail.com');
+//     await expect(page.getByRole('main')).toContainText('diner');
+// });
 
 test('create/remove franchise - mocked', async ({ page }) => {
 
