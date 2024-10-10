@@ -44,13 +44,26 @@ test('view user info', async ({ page }) => {
 });
 
 test('create/remove franchise - mocked', async ({ page }) => {
+
+  var userType = 'admin'
+
   //mock returning an admin user
   await page.route('*/**/api/auth', async (route) => {
-    const loginReq = { email: 'rex.okland@gmail.com', password: '000' };
-    const loginRes = { user: { id: 10, name: 'Rex Okland', email: 'rex.okland@gmail.com', roles: [{ role: 'admin' }] }, token: 'abcdefg' };
-    expect(route.request().method()).toBe('PUT');
-    expect(route.request().postDataJSON()).toMatchObject(loginReq);
-    await route.fulfill({ json: loginRes });
+    if(userType == 'admin'){
+      const loginReq = { email: 'fakeEmail@gmail.com', password: '000' };
+      const loginRes = { user: { id: 10, name: 'Its Me', email: 'fakeEmail@gmail.com', roles: [{ role: 'admin' }] }, token: 'abcdefg' };
+      expect(route.request().method()).toBe('PUT');
+      expect(route.request().postDataJSON()).toMatchObject(loginReq);
+      await route.fulfill({ json: loginRes });
+    }
+    else{
+      const loginReq = { email: 'fakeEmail@gmail.com', password: '000' };
+      const loginRes = { user: { id: 10, name: 'Its Me', email: 'fakeEmail@gmail.com', roles: [{ role: 'admin' }] }, token: 'abcdefg' };
+      expect(route.request().method()).toBe('PUT');
+      expect(route.request().postDataJSON()).toMatchObject(loginReq);
+      await route.fulfill({ json: loginRes });
+    }
+
   });
 
   //mock returning all franchises (admin control)
@@ -89,17 +102,16 @@ test('create/remove franchise - mocked', async ({ page }) => {
 
   //mock the deletion of a franchise (admin control)
   //should I use 20 instead of ':franchiseID' ?
-
-  // await page.route('**/api/franchise/20', async (route) => {
-  //   deleteFranchiseRes: { message: 'franchise deleted' }
-  //   expect(route.request().method()).toBe('DELETE');
-  //   await route.fulfill({ json: deleteFranchiseRes });
-  // });
+  await page.route('**/api/franchise/10', async (route) => {
+    const deleteFranchiseRes = { message: 'franchise deleted' }
+    expect(route.request().method()).toBe('DELETE');
+    await route.fulfill({ json: deleteFranchiseRes });
+  });
 
   await page.goto('http://localhost:5173/');
   await page.getByRole('link', { name: 'Login' }).click();
   await page.getByPlaceholder('Email address').click();
-  await page.getByPlaceholder('Email address').fill('rex.okland@gmail.com');
+  await page.getByPlaceholder('Email address').fill('fakeEmail@gmail.com');
 
   await page.getByPlaceholder('Password').fill('000');
 
@@ -119,11 +131,15 @@ test('create/remove franchise - mocked', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Create' }).click();
 
-  // await page.getByRole('row', { name: 'New Franchise Test user Close' }).getByRole('button').click();
-  // await page.getByText('Sorry to see you go').click();
-  // await expect(page.getByRole('heading')).toContainText('Sorry to see you go');
+  await expect(page.getByRole('heading')).toContainText("Mama Ricci's kitchen");
 
-  // await page.getByRole('button', { name: 'Close' }).click();
+  await page.getByRole('row', { name: 'Another Franchise Test user Close' }).getByRole('button').click();
+  await page.getByText('Sorry to see you go').click();
+  await expect(page.getByRole('heading')).toContainText('Sorry to see you go');
+
+  await page.getByRole('button', { name: 'Close' }).click();
+  await expect(page.getByRole('heading')).toContainText("Mama Ricci's kitchen");
+
 });
 
 
@@ -165,29 +181,40 @@ test('purchase with login', async ({ page }) => {
   });
 
   await page.route('*/**/api/order', async (route) => {
-    const orderReq = {
-      items: [
-        { menuId: 1, description: 'Veggie', price: 0.0038 },
-        { menuId: 2, description: 'Pepperoni', price: 0.0042 },
-      ],
-      storeId: '4',
-      franchiseId: 2,
-    };
-    const orderRes = {
-      order: {
+
+    var methodType = route.request().method()
+
+    if(methodType == 'POST'){
+      const orderReq = {
         items: [
           { menuId: 1, description: 'Veggie', price: 0.0038 },
           { menuId: 2, description: 'Pepperoni', price: 0.0042 },
         ],
         storeId: '4',
         franchiseId: 2,
-        id: 23,
-      },
-      jwt: 'eyJpYXQ',
-    };
-    expect(route.request().method()).toBe('POST');
-    expect(route.request().postDataJSON()).toMatchObject(orderReq);
-    await route.fulfill({ json: orderRes });
+      };
+      const orderRes = {
+        order: {
+          items: [
+            { menuId: 1, description: 'Veggie', price: 0.0038 },
+            { menuId: 2, description: 'Pepperoni', price: 0.0042 },
+          ],
+          storeId: '4',
+          franchiseId: 2,
+          id: 23,
+        },
+        jwt: 'eyJpYXQ',
+      };
+      expect(route.request().method()).toBe('POST');
+      expect(route.request().postDataJSON()).toMatchObject(orderReq);
+      await route.fulfill({ json: orderRes });
+    }
+    else if(methodType == 'GET'){
+      const pastOrders = { dinerId: 4, orders: [{ id: 1, franchiseId: 1, storeId: 1, date: '2024-06-05T05:14:40.000Z', items: [{ id: 1, menuId: 1, description: 'Veggie', price: 0.05 }] }], page: 1 }
+      await route.fulfill({ json: pastOrders });
+    }
+    
+    
   });
 
   await page.goto('/');
@@ -219,5 +246,100 @@ test('purchase with login', async ({ page }) => {
 
   // Check balance
   await expect(page.getByText('0.008')).toBeVisible();
+
+  //go to view past orders//
+  await page.getByRole('link', { name: 'KC' }).click();
 });
+
+
+test('franchisee dash - mocked', async ({ page }) => {
+
+  //mock returning a franchise user
+  await page.route('*/**/api/auth', async (route) => {
+    var methodType = route.request().method()
+    if(methodType == 'PUT'){
+      console.log('PUT method reached')
+      const loginReq = { email: 'fakeEmail@gmail.com', password: '000' };
+      const loginRes = { user: { id: 10, name: 'Its Me', email: 'fakeEmail@gmail.com', roles: [{ role: 'franchisee' }] }, token: 'abcdefg' };
+      expect(route.request().method()).toBe('PUT');
+      expect(route.request().postDataJSON()).toMatchObject(loginReq);
+      await route.fulfill({ json: loginRes });
+    }
+    else if(methodType == 'DELETE'){
+      console.log('DELETE method reached')
+      const logoutRes = { message: 'logout successful' };
+      await route.fulfill({ json: logoutRes });
+    }
+  });
+
+  //mocking out the franchisee dashboard showing their stores
+  // ...    /api/franchise/:userId
+  await page.route('*/**/api/franchise/10', async (route) => {
+    const storesRes = [{ id: 2, name: 'pizzaPocket', admins: [{ id: 10, name: 'Its Me', email: 'fakeEmail@gmail.com' }], stores: [{ id: 4, name: 'SLC', totalRevenue: 0 }] }]
+    await route.fulfill({ json: storesRes });
+  });
+
+  //mocking out creating a store
+  //...   using '2' instead of ':franchiseID'
+  await page.route('*/**/api/franchise/2/store', async (route) => {
+    const newStoreRes = { id: 99, franchiseId: 2, name: 'anotherOne' }
+    await route.fulfill({ json: newStoreRes });
+  });
+
+
+  await page.goto('http://localhost:5173/');
+  await page.getByRole('link', { name: 'Login' }).click();
+  await page.getByPlaceholder('Email address').click();
+  await page.getByPlaceholder('Email address').fill('fakeEmail@gmail.com');
+
+  // await page.getByPlaceholder('Password').fill('005'); //doesnt work
+  // await page.getByRole('button', { name: 'Login' }).click();
+
+  await page.getByPlaceholder('Password').fill('000');
+  await page.getByRole('button', { name: 'Login' }).click();
+
+  await page.getByLabel('Global').getByRole('link', { name: 'Franchise' }).click();
+
+  await page.getByRole('button', { name: 'Create store' }).click();
+  await page.getByPlaceholder('store name').click();
+  await page.getByPlaceholder('store name').fill('anotherOne');
+  await page.getByRole('button', { name: 'Create' }).click();
+
+  await page.getByRole('link', { name: 'Logout' }).click();
+
+});
+
+test('misc', async ({ page }) => {
+  await page.goto('http://localhost:5173/');
+  await page.getByRole('link', { name: 'Order' }).click();
+  await page.getByRole('link', { name: 'home' }).click();
+  await page.getByLabel('Global').getByRole('link', { name: 'Franchise' }).click();
+  await page.getByRole('link', { name: 'home' }).click();
+  await page.getByLabel('Global').click();
+  await page.getByRole('link', { name: 'Login' }).click();
+  await page.getByRole('link', { name: 'home' }).click();
+  await page.locator('.hs-carousel-pagination > span:nth-child(2)').click();
+  await page.locator('span:nth-child(3)').click();
+  await page.locator('span:nth-child(4)').click();
+  await page.getByRole('link', { name: 'Register' }).click();
+  await page.locator('div').filter({ hasText: /^JWT Pizza$/ }).click();
+  await page.getByText('JWT Pizza', { exact: true }).click();
+  await page.getByRole('link', { name: 'home' }).click();
+  await expect(page.getByRole('heading')).toContainText('The web\'s best pizza');
+});
+
+test('bad login', async ({ page }) => {
+  await page.goto('http://localhost:5173/');
+  await page.getByRole('link', { name: 'Login' }).click();
+  await page.getByPlaceholder('Email address').click();
+  await page.getByPlaceholder('Email address').fill('badEmail');
+  await page.getByPlaceholder('Password').click();
+  await page.getByPlaceholder('Password').fill('bad');
+  await page.locator('div').filter({ hasText: /^Password$/ }).getByRole('button').click();
+  await page.getByRole('button', { name: 'Login' }).click();
+  await page.getByPlaceholder('Email address').click();
+  await page.getByPlaceholder('Email address').fill('badEmail@gmail.com');
+  await page.getByRole('button', { name: 'Login' }).click();
+});
+
 
