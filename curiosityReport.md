@@ -2,6 +2,8 @@
 ## Azure Devops Basics:
 Over the Summer I worked an internship at a Microsoft Consulting company called JourneyTEAM, working with a couple of devops tools on the Microsoft Azure platform. I really wish I had taken this class before doing so because I don't feel like I ever fully understood what I was doing what I had to navigate the Azure. I used the tools I was told to and just sort of made it work. Now that I have become a little more familiar with what Azure's rival (AWS) and what it's basic tools do, I am curious to see how the services compare to one another, and how I could better understand the Azure platform. I'm taking a beginners course on LinkedIn Learning for this assignment. Here's what I've learned:
 
+[Azure Devops Logo](/curiosityReportImages/azure-devops-logo.png)
+
 ## Azure Devops Overview:
 First things first, I'm quickly realizing that Azure Devops has it's own portal and is not the same as the Azure portal... this is all going to be new information for me, so if it seems like I don't know what I'm talking about, that's probably the case. 
 
@@ -29,6 +31,9 @@ Cool things about projects:
 
 ### AZURE BOARDS: 
 Work Items | Kanban Boards | Backlogs | Sprints | Queries
+
+[Physical Kanban Board](/curiosityReportImages/kanban-cover-image)
+
 #### Work Items
 This is a spot for team/project planning for a project. It allows scheduling of key steps in a software project and allows us to oversee what has/hasn't been done. Work Items are the key to this process, as they are the basic units of work. Workflow templates like Scrum/Agile can be selected to organize our work items!
 Work Items are generally categorized as one of two things: **issues** or **backlogs**
