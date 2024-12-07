@@ -32,7 +32,7 @@ Cool things about projects:
 ### AZURE BOARDS: 
 Work Items | Kanban Boards | Backlogs | Sprints | Queries
 
-[Physical Kanban Board](/curiosityReportImages/kanban-cover-image)
+[Physical Kanban Board](/curiosityReportImages/kanban-cover-image.png)
 
 #### Work Items
 This is a spot for team/project planning for a project. It allows scheduling of key steps in a software project and allows us to oversee what has/hasn't been done. Work Items are the key to this process, as they are the basic units of work. Workflow templates like Scrum/Agile can be selected to organize our work items!
