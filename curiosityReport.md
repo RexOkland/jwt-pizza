@@ -1,8 +1,8 @@
 # Curiosity Report - by Rex Okland
 ## Azure Devops Basics:
-Over the Summer I worked an internship at a Microsoft Consulting company called JourneyTEAM, working with a couple of devops tools on the Microsoft Azure platform. I really wish I had taken this class before doing so because I don't feel like I ever fully understood what I was doing what I had to navigate the Azure. I used the tools I was told to and just sort of made it work. Now that I have become a little more familiar with what Azure's rival (AWS) and what it's basic tools do, I am curious to see how the services compare to one another, and how I could better understand the Azure platform. I'm taking a beginners course on LinkedIn Learning for this assignment. Here's what I've learned:
+Over the Summer I worked an internship at a Microsoft Consulting company called JourneyTEAM, working with a couple of cloud tools/services on the Microsoft Azure platform. I really wish I had taken this class before doing so because I don't feel like I ever fully understood what I was doing what I had to navigate the Azure. I used the tools I was told to and just sort of made it work. Now that I have become a little more familiar with what Azure's rival (AWS) and what it's basic tools do, I am curious to see how the services compare to one another, and how I could better understand the Azure platform. I'm taking a beginners course on LinkedIn Learning for this assignment. Here's what I've learned:
 
-[Azure Devops Logo](/curiosityReportImages/azure-devops-logo.png)
+![Azure Devops Logo](/curiosityReportImages/azure-devops-logo.png)
 
 ## Azure Devops Overview:
 First things first, I'm quickly realizing that Azure Devops has it's own portal and is not the same as the Azure portal... this is all going to be new information for me, so if it seems like I don't know what I'm talking about, that's probably the case. 
@@ -32,7 +32,7 @@ Cool things about projects:
 ### AZURE BOARDS: 
 Work Items | Kanban Boards | Backlogs | Sprints | Queries
 
-[Physical Kanban Board](/curiosityReportImages/kanban-cover-image.png)
+![Physical Kanban Board](/curiosityReportImages/kanban-cover-image.png)
 
 #### Work Items
 This is a spot for team/project planning for a project. It allows scheduling of key steps in a software project and allows us to oversee what has/hasn't been done. Work Items are the key to this process, as they are the basic units of work. Workflow templates like Scrum/Agile can be selected to organize our work items!
@@ -59,20 +59,41 @@ All work items become part of the project overview dashboard. In a PowerBI/Table
 
 ### AZURE REPOS: 
 Files | Commits | Pushes | Branches | Tags | Pull Requests
+
+![Git Logo](/curiosityReportImages/git-logo.png)
+
 Version control is obviously a huge part of software developement. It appears that Azure's Devop portal has it's own way of handling this. Azure Repos are Cloud-Hosted code repositories that integrate really nicely with other Azure/Microsoft tools. 
 Each project in the Azure Devops Portal has Repos associated to it, and Git is the default provider for this service. 
 
 #### What about Github?
 Github integrates well with the Azure Devops Portal and it's tools. There is no problem using Github, but it is possible to work completely within Azure Repos. Azure Repos is supposed to work exactly the same as Github.
+- Clone folders using git clone.
+- Push/Pull
 
 #### Files
 Yeah this looks exacltly like Github, the files tab holds all of the project as they currently stand. Upon creation of a repo, we get the typical .gitignore and README files!
 
 #### Commits
-The Commits tab shows the commit history of a repository. When we click on past commit we can view the changes that we were made, and view the files as they were at that commit. We can even see where in teh history the code was branched/merged/etc.
+The Commits tab shows the commit history of a repository. When we click on past commit we can view the changes that we were made, and view the files as they were at that commit. We can even see where in the history the code was branched/merged/etc.
+
+#### Pushes
+Pushes and Pull requests work exactly the same as in Github. Like legit, I don't know what to write here cause it's all the same thing.
 
 #### Branches
 Just like Github, people can branch the repository and work on their own version of it. We can view existing branches from this tab.
 
+### AZURE PIPELINES: 
+Environments | Releases | Library | Task Groups | Deployment Groups
 
+![Pipelines Cover Image](/curiosityReportImages/pipeline-cover-image.png)
 
+Continuous Integration + Continuous Deployment
+Process is pretty similar to our Github CI File: Trigger -> Build -> Test -> Artifacts, it uses Yaml files and has the same goal as the tools we used in Github Actions. 
+
+There is a whole section in the portal called pipelines. It looks like Azure has a low-code pipeline building solution, but it's also mentioned that YAML files can be used like we did on the github CI.
+- The tutorial I'm watching isn't going to go in depth on actually building these out, but there are various options for setting up pipelines in Azure, and setting the trigger to a commit or a push seems pretty straightforward.
+- Azure also offers templates for the pipeline that users can modify.
+- Secrets can be used in Azure pipelines too, they are called Variables in Azure. They do not appear to be as secretive/sercure as the ones in Github.
+
+### FINAL REVIEW
+Overall, it seems like Azure Devops tools seems like a close relative to Github. I didn't quite get into the services like I was expecting from this LinkedIn Learning course, but I do think it's really interesting the set up they have on their Devops portal. It has a lot of the exact same functionality as Github, plus a couple of other organizational tools to hep a team work together. As I continue to work with Microsoft products, and software development I am curious to see how the tools here work when actually put in action!
